@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Free TikTok Video Downloader – HD Quality</title>
+    <meta name="description" content="The ultimate tool to download any TikTok video, slideshow, or audio in seconds. Our free TikTok Downloader Pro lets you save content in high-definition.">
+    <meta name="keywords" content="tiktok downloader, download tiktok video, tiktok video downloader, save tiktok, tiktok mp4, tiktok mp3, tiktok all in one downloader">
+    <meta name="author" content="YourAppName or YourName">
+    <link rel="canonical" href="https://www.yourdomain.com/"> <!-- IMPORTANT: Replace with your actual domain -->
+    
+    <!-- FAVICON -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%23ff0050;%22 /><stop offset=%22100%25%22 style=%22stop-color:%23e100ff;%22 /></linearGradient></defs><path fill=%22url(%23g)%22 d=%22M50,5A45,45,0,1,0,95,50,45,45,0,0,0,50,5ZM67.5,47.5,45,63.75a2.5,2.5,0,0,1-4-2V38.25a2.5,2.5,0,0,1,4-2L67.5,52.5A2.5,2.5,0,0,1,67.5,47.5Z%22 transform=%22rotate(90 50 50)%22/></svg>">
+
+    <!-- Open Graph & Twitter Cards -->
+    <meta property="og:title" content="Free TikTok Video Downloader – HD Quality">
+    <meta property="og:description" content="Download any TikTok video, slideshow, or audio in seconds. Our free TikTok Downloader Pro lets you save content in high-definition.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.yourdomain.com/">
+    <meta property="og:image" content="https://www.yourdomain.com/og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free TikTok Video Downloader – HD Quality">
+    <meta name="twitter:description" content="Download any TikTok video, slideshow, or audio in seconds. Our free TikTok Downloader Pro lets you save content in high-definition.">
+    <meta name="twitter:image" content="https://www.yourdomain.com/twitter-image.jpg">
+
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Free TikTok Video Downloader",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Any (Web-based)",
+      "description": "A free web-based tool to download any content from TikTok, including videos, photo slideshows as individual images or a single ZIP file, stories, and MP3 audio tracks.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "1842" },
+      "author": { "@type": "Person", "name": "YourAppName or YourName" }
+    }
+    </script>
+
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f7f7f7; --card-bg-color: #ffffff; --text-color: #1f2937;
+            --text-muted-color: #6b7280; --input-bg-color: #e5e7eb; --border-color: #e5e7eb;
+            --prose-color: #374151; --brand-gradient: linear-gradient(90deg, #ff0050, #e100ff);
+        }
+        html.dark {
+            --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb;
+            --text-muted-color: #9ca3af; --input-bg-color: #374151; --border-color: #374151;
+            --prose-color: #d1d5db;
+        }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            transition: background-color 0.3s, color 0.3s;
+            background: linear-gradient(-45deg, var(--bg-color) 0%, #fde2e4 50%, #e9defa 100%);
+            background-size: 400% 400%;
+            animation: backgroundPan 15s ease infinite;
+        }
+        .main-container, .history-item, .modal-content { 
+            background-color: var(--card-bg-color); 
+            transition: background-color 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        .main-container:hover {
+             box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1), 0 15px 15px -10px rgba(0, 0, 0, 0.04);
+        }
+        .tab-btn { transition: color 0.2s, border-color 0.2s; }
+        .tab-btn.active { color: #ff0050; border-color: #ff0050; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeInUp 0.5s ease-in-out; }
+        .btn-primary { background: var(--brand-gradient); transition: all 0.3s ease; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 0, 80, 0.4); }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #ff0050; animation: spin 1s ease infinite; }
+        
+        /* Animations */
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes backgroundPan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animate-on-load {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        /* Theme Toggle Switch CSS */
+        .theme-switch-wrapper { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 1rem; }
+        .theme-switch { display: inline-block; height: 26px; position: relative; width: 50px; }
+        .theme-switch input { display:none; }
+        .slider { background-color: #ccc; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0; transition: .4s; border-radius: 26px; }
+        .slider:before { background-color: #fff; bottom: 3px; content: ""; height: 20px; left: 3px; position: absolute; transition: .4s; width: 20px; border-radius: 50%; }
+        input:checked + .slider { background-color: #ff0050; }
+        input:checked + .slider:before { transform: translateX(24px); }
+        
+        /* FAQ Accordion */
+        .faq-item .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-item.open .faq-answer { max-height: 200px; } /* Adjust max-height as needed */
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal.open { opacity: 1; visibility: visible; }
+        .modal-content {
+            padding: 2rem; border-radius: 1rem; max-width: 500px; width: 90%;
+            transform: translateY(-20px); transition: transform 0.3s ease;
+            position: relative;
+        }
+        .modal.open .modal-content { transform: translateY(0); }
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem; font-size: 1.5rem;
+            cursor: pointer; color: var(--text-muted-color);
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .modal-icon.success { color: #22c55e; } /* Green-500 */
+        .modal-icon.error { color: #ef4444; }   /* Red-500 */
+        .modal-icon.info { color: #3b82f6; }    /* Blue-500 */
+    </style>
+</head>
+<body class="antialiased">
+
+    <main class="w-full max-w-4xl mx-auto p-4">
+        <!-- Header -->
+        <header class="text-center mb-8 animate-on-load">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="theme-toggle">
+                    <input type="checkbox" id="theme-toggle">
+                    <div class="slider"></div>
+                </label>
+            </div>
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <svg class="h-12 w-12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#ff0050;" /><stop offset="100%" style="stop-color:#e100ff;" /></linearGradient></defs>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2ZM12.75 8.75C12.75 8.19772 12.3023 7.75 11.75 7.75C11.1977 7.75 10.75 8.19772 10.75 8.75V12.5303L10.0202 11.7995C9.62933 11.4082 9.00007 11.4082 8.6092 11.7995C8.21833 12.1908 8.21833 12.8201 8.6092 13.2114L11.3592 15.9614C11.75 16.3527 12.3793 16.3527 12.7702 15.9614L15.5202 13.2114C15.911 12.8201 15.911 12.1908 15.5202 11.7995C15.1293 11.4082 14.5001 11.4082 14.1092 11.7995L13.25 12.6592V8.75H12.75Z" fill="url(#logoGradient)"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold">Free TikTok Video Downloader – HD Quality</h1>
+            <p class="mt-4 text-lg text-muted-color max-w-2xl mx-auto">Download any TikTok video, slideshow, or audio in seconds. Our free TikTok Downloader Pro lets you save content in high-definition. Just paste a link, click download, and enjoy.</p>
+        </header>
+
+        <!-- Downloader Card -->
+        <section class="main-container p-6 sm:p-8 rounded-2xl animate-on-load" style="animation-delay: 0.1s;">
+            <!-- Tabs -->
+            <div class="border-b border-[var(--border-color)] mb-6">
+                <nav class="flex -mb-px space-x-6" aria-label="Tabs">
+                    <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg" data-tab="single-post">
+                        <i class="fas fa-link mr-2"></i>Single Post
+                    </button>
+                    <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" data-tab="profile">
+                        <i class="fas fa-user mr-2"></i>Profile Downloader
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content: Single Post -->
+            <div id="single-post" class="tab-content active">
+                <div class="relative mb-4">
+                    <i class="fa-solid fa-link absolute top-1/2 -translate-y-1/2 left-4 text-gray-400"></i>
+                    <input id="single-url" type="text" placeholder="Paste TikTok link here..." aria-label="Single TikTok Link Input" class="w-full pl-12 pr-24 py-3 text-lg rounded-lg bg-[var(--input-bg-color)] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-pink-500">
+                    <div class="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1">
+                        <button id="paste-btn-single" aria-label="Paste from clipboard" class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-sm rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition" title="Paste"><i class="fa-solid fa-paste"></i></button>
+                        <button id="clear-btn-single" aria-label="Clear input" class="px-3 py-1 bg-gray-300 dark:bg-gray-600 text-sm rounded hover:bg-gray-400 dark:hover:bg-gray-500 transition" title="Clear"><i class="fa-solid fa-times"></i></button>
+                    </div>
+                </div>
+                <button id="download-btn-single" class="btn-primary w-full text-white font-bold py-3 px-6 rounded-lg shadow-md text-lg">Paste TikTok Link & Download Now</button>
+                <div id="loader-single" class="hidden flex justify-center items-center mt-6"><div class="spinner"></div><p id="loader-text-single" class="ml-4">Working our magic...</p></div>
+                <div id="results-single" class="mt-8"></div>
+            </div>
+
+            <!-- Tab Content: Profile -->
+            <div id="profile" class="tab-content">
+                <div class="relative mb-4">
+                    <i class="fa-solid fa-user absolute top-1/2 -translate-y-1/2 left-4 text-gray-400"></i>
+                    <input id="profile-url" type="text" placeholder="Paste profile link or username..." aria-label="TikTok Profile Link Input" class="w-full pl-12 py-3 text-lg rounded-lg bg-[var(--input-bg-color)] border-2 border-transparent focus:outline-none focus:ring-2 focus:ring-pink-500">
+                </div>
+                <button id="fetch-btn-profile" class="btn-primary w-full text-white font-bold py-3 px-6 rounded-lg shadow-md text-lg">Fetch Profile's Videos</button>
+                <div id="loader-profile" class="hidden flex justify-center items-center mt-6"><div class="spinner"></div><p id="loader-text-profile" class="ml-4">Finding those awesome videos...</p></div>
+                <div id="results-profile" class="mt-8">
+                    <div id="profile-controls" class="hidden items-center justify-between mb-4">
+                        <button id="select-all-btn" class="text-sm font-medium text-pink-500 hover:underline">Select All</button>
+                        <button id="download-selected-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition disabled:opacity-50" disabled><i class="fas fa-download mr-2"></i>Download Selected (<span id="selected-count">0</span>)</button>
+                    </div>
+                    <div id="profile-videos-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+                    <button id="load-more-btn" class="hidden mt-6 w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 font-bold py-3 px-6 rounded-lg">Load More</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features Section -->
+        <section class="main-container p-6 sm:p-8 rounded-2xl shadow-lg mt-8 animate-on-load" style="animation-delay: 0.2s;">
+            <h2 class="text-2xl font-bold mb-6 text-center">Why Choose Our Downloader?</h2>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div>
+                    <i class="fas fa-video text-3xl mb-2 text-pink-500"></i>
+                    <h3 class="font-semibold text-lg">🎥 HD Video Downloads</h3>
+                    <p class="text-muted-color text-sm"><b>Save TikTok videos in full HD</b> quality.</p>
+                </div>
+                <div>
+                    <i class="fas fa-users text-3xl mb-2 text-purple-500"></i>
+                    <h3 class="font-semibold text-lg">👤 Bulk Profile Downloads</h3>
+                    <p class="text-muted-color text-sm"><b>Download all videos from a user</b> at once with our easy-to-use profile downloader.</p>
+                </div>
+                <div>
+                    <i class="fas fa-images text-3xl mb-2 text-blue-500"></i>
+                    <h3 class="font-semibold text-lg">🖼️ Photo Slides & MP3</h3>
+                    <p class="text-muted-color text-sm"><b>Convert slides to ZIP or MP3 audio</b>, giving you full control over your content.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="main-container p-6 sm:p-8 rounded-2xl shadow-lg mt-8 animate-on-load" style="animation-delay: 0.3s;">
+            <h2 class="text-2xl font-bold mb-4 text-center">Frequently Asked Questions (FAQ)</h2>
+            <div id="faq-container" class="space-y-4">
+                <div class="faq-item border-b border-[var(--border-color)] pb-4">
+                    <button class="faq-question w-full flex justify-between items-center text-left font-semibold text-lg">
+                        <span>How to download TikTok videos?</span>
+                        <i class="faq-icon fas fa-plus transition-transform"></i>
+                    </button>
+                    <div class="faq-answer pt-2 text-muted-color">
+                        <p>It's simple! 1. Find the TikTok video you want. 2. Tap the "Share" button and "Copy Link". 3. Paste the link into our downloader and click "Download". The video will be saved to your device.</p>
+                    </div>
+                </div>
+                <div class="faq-item border-b border-[var(--border-color)] pb-4">
+                    <button class="faq-question w-full flex justify-between items-center text-left font-semibold text-lg">
+                        <span>Can I save TikTok videos in HD?</span>
+                        <i class="faq-icon fas fa-plus transition-transform"></i>
+                    </button>
+                    <div class="faq-answer pt-2 text-muted-color">
+                        <p>Yes! Our tool always provides the highest quality available for the video, which is often High Definition (HD). You don't need to do anything extra; we handle it for you.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question w-full flex justify-between items-center text-left font-semibold text-lg">
+                        <span>Does this tool work with TikTok photo slideshows?</span>
+                        <i class="faq-icon fas fa-plus transition-transform"></i>
+                    </button>
+                    <div class="faq-answer pt-2 text-muted-color">
+                        <p>Absolutely. When you paste a link to a photo slideshow, our tool will detect it and give you the option to download each photo individually or all of them together in a convenient ZIP file.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- History & Footer -->
+        <section id="history-section" class="mt-12 animate-on-load" style="animation-delay: 0.4s;"><h2 class="text-2xl font-bold mb-4">Download History</h2><div id="history-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p id="no-history" class="text-muted-color col-span-full text-center py-4"><i class="fas fa-history text-4xl mb-2 text-gray-400"></i><br>Your download history will appear here.</p></div></section>
+    </main>
+    <footer class="text-center p-6 mt-6 text-muted-color animate-on-load" style="animation-delay: 0.5s;">
+        <div class="flex justify-center flex-wrap gap-4 sm:gap-6 mb-4 text-sm"><a href="#" id="about-link" class="hover:text-pink-500 transition">About</a><a href="#" id="privacy-link" class="hover:text-pink-500 transition">Privacy</a><a href="#" id="terms-link" class="hover:text-pink-500 transition">Terms</a><a href="#" id="contact-link" class="hover:text-pink-500 transition">Contact</a><a href="#" id="how-to-link" class="hover:text-pink-500 transition">How to Download</a></div>
+        <p class="mt-4 text-sm">&copy; 2024 TikTok Downloader Pro. This site is not affiliated with TikTok.</p>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-container">
+        <div id="app-modal" class="modal">
+            <div class="modal-content text-center">
+                <span class="modal-close" id="modal-close-btn">&times;</span>
+                <div id="modal-icon" class="modal-icon mx-auto"></div>
+                <h3 id="modal-title" class="text-xl font-bold mb-2"></h3>
+                <p id="modal-message" class="text-muted-color"></p>
+                <button id="modal-ok-btn" class="mt-6 btn-primary text-white font-bold py-2 px-4 rounded-lg">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements & State ---
+            const elements = {
+                tabs: document.querySelectorAll('.tab-btn'),
+                tabContents: document.querySelectorAll('.tab-content'),
+                themeToggle: document.getElementById('theme-toggle'),
+                faqContainer: document.getElementById('faq-container'),
+                // Single Post
+                singleUrl: document.getElementById('single-url'),
+                pasteBtnSingle: document.getElementById('paste-btn-single'),
+                clearBtnSingle: document.getElementById('clear-btn-single'),
+                downloadBtnSingle: document.getElementById('download-btn-single'),
+                loaderSingle: document.getElementById('loader-single'),
+                loaderTextSingle: document.getElementById('loader-text-single'),
+                resultsSingle: document.getElementById('results-single'),
+                // Profile
+                profileUrl: document.getElementById('profile-url'),
+                fetchBtnProfile: document.getElementById('fetch-btn-profile'),
+                loaderProfile: document.getElementById('loader-profile'),
+                loaderTextProfile: document.getElementById('loader-text-profile'),
+                resultsProfile: document.getElementById('results-profile'),
+                profileControls: document.getElementById('profile-controls'),
+                selectAllBtn: document.getElementById('select-all-btn'),
+                downloadSelectedBtn: document.getElementById('download-selected-btn'),
+                selectedCount: document.getElementById('selected-count'),
+                videosGrid: document.getElementById('profile-videos-grid'),
+                loadMoreBtn: document.getElementById('load-more-btn'),
+                // History
+                historyContainer: document.getElementById('history-container'),
+                noHistoryMsg: document.getElementById('no-history'),
+                // Modal
+                appModal: document.getElementById('app-modal'),
+                modalCloseBtn: document.getElementById('modal-close-btn'),
+                modalOkBtn: document.getElementById('modal-ok-btn'),
+                modalIcon: document.getElementById('modal-icon'),
+                modalTitle: document.getElementById('modal-title'),
+                modalMessage: document.getElementById('modal-message'),
+            };
+
+            let downloadHistory = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+            let profileState = { cursor: 0, unique_id: '', videos: [] };
+
+            // --- MODAL SYSTEM ---
+            /**
+             * Displays a custom modal message.
+             * @param {string} type - 'success', 'error', or 'info'.
+             * @param {string} title - The title of the modal.
+             * @param {string} message - The message content.
+             */
+            const showModal = (type, title, message) => {
+                elements.modalIcon.className = 'modal-icon mx-auto'; // Reset classes
+                elements.modalTitle.textContent = title;
+                elements.modalMessage.textContent = message;
+
+                switch (type) {
+                    case 'success':
+                        elements.modalIcon.classList.add('success', 'fas', 'fa-check-circle');
+                        break;
+                    case 'error':
+                        elements.modalIcon.classList.add('error', 'fas', 'fa-times-circle');
+                        break;
+                    case 'info':
+                        elements.modalIcon.classList.add('info', 'fas', 'fa-info-circle');
+                        break;
+                    default:
+                        elements.modalIcon.classList.add('info', 'fas', 'fa-info-circle');
+                }
+                elements.appModal.classList.add('open');
+            };
+
+            const hideModal = () => {
+                elements.appModal.classList.remove('open');
+            };
+
+            if (elements.modalCloseBtn) elements.modalCloseBtn.addEventListener('click', hideModal);
+            if (elements.modalOkBtn) elements.modalOkBtn.addEventListener('click', hideModal);
+            // Close modal if clicked outside content
+            if (elements.appModal) {
+                elements.appModal.addEventListener('click', (e) => {
+                    if (e.target === elements.appModal) {
+                        hideModal();
+                    }
+                });
+            }
+
+            // --- TABS & THEME ---
+            elements.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    elements.tabs.forEach(t => {
+                        t.classList.remove('active', 'text-pink-500', 'border-pink-500');
+                        t.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                    });
+                    elements.tabContents.forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active', 'text-pink-500', 'border-pink-500');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:hover:text-gray-300');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
+            });
+
+            // Theme Toggle
+            if (elements.themeToggle) {
+                elements.themeToggle.addEventListener('change', () => {
+                    localStorage.setItem('darkMode', elements.themeToggle.checked);
+                    applyTheme(elements.themeToggle.checked);
+                });
+            }
+
+            const applyTheme = (isDark) => {
+                document.documentElement.classList.toggle('dark', isDark);
+                if (elements.themeToggle) {
+                    elements.themeToggle.checked = isDark;
+                }
+            };
+            
+            // --- FAQ ACCORDION ---
+            if (elements.faqContainer) {
+                elements.faqContainer.addEventListener('click', (e) => {
+                    const questionButton = e.target.closest('.faq-question');
+                    if (questionButton) {
+                        const faqItem = questionButton.parentElement;
+                        faqItem.classList.toggle('open');
+                    }
+                });
+            }
+
+            // --- SINGLE POST DOWNLOADER ---
+            const handleSingleDownload = async () => {
+                const url = elements.singleUrl.value.trim();
+                if (!url) { showModal('error', 'Input Required', 'الرجاء لصق رابط تيك توك أولاً.'); return; } // Please paste a TikTok link first.
+                
+                hideModal(); // Hide any previous error/info modal
+                elements.resultsSingle.innerHTML = '';
+                showLoader('single', 'نعمل على سحرك...'); // Working our magic...
+
+                try {
+                    const result = await fetchApi({ url });
+                    if (result.data.images && result.data.images.length > 0) {
+                        renderSlideshowResults(result.data);
+                    } else if (result.data.play) {
+                        renderVideoResults(result.data);
+                    } else {
+                        throw new Error("نوع المحتوى غير مدعوم أو لم يتم العثور على وسائط قابلة للتنزيل."); // Unsupported content type or no downloadable media found.
+                    }
+                    addToHistory(result.data);
+                } catch (error) {
+                    showModal('error', 'فشل التنزيل', error.message); // Download Failed
+                } finally {
+                    hideLoader('single');
+                }
+            };
+
+            if(elements.downloadBtnSingle) elements.downloadBtnSingle.addEventListener('click', handleSingleDownload);
+            if(elements.pasteBtnSingle) elements.pasteBtnSingle.addEventListener('click', async () => {
+                try {
+                    elements.singleUrl.value = await navigator.clipboard.readText();
+                } catch (e) {
+                    showModal('error', 'خطأ في الحافظة', 'فشل اللصق من الحافظة. يرجى اللصق يدويًا.'); // Clipboard Error, Failed to paste from clipboard. Please paste manually.
+                }
+            });
+            if(elements.clearBtnSingle) elements.clearBtnSingle.addEventListener('click', () => {
+                elements.singleUrl.value = '';
+                elements.resultsSingle.innerHTML = '';
+                hideModal(); // Clear any error/info modal
+            });
+            
+            const renderAuthorInfo = (data) => `
+                <div class="flex items-center mb-4">
+                    <img src="${data.author.avatar}" class="w-16 h-16 rounded-full border-2 border-pink-500" alt="TikTok profile picture for ${data.author.nickname}" onerror="this.onerror=null;this.src='https://placehold.co/64x64/f0f2f5/333?text=...';">
+                    <div class="ml-4 overflow-hidden">
+                        <h3 class="text-xl font-semibold">${data.author.nickname}</h3>
+                        <p class="text-muted-color truncate">@${data.author.unique_id}</p>
+                    </div>
+                </div>
+                <p class="mb-4">${data.title}</p>
+            `;
+
+            const renderVideoResults = (data) => {
+                elements.resultsSingle.innerHTML = `
+                    <div class="p-4 border border-[var(--border-color)] rounded-lg animate-on-load">
+                        ${renderAuthorInfo(data)}
+                        <video class="w-full rounded-lg mb-4" controls src="${data.play}" title="TikTok video preview for ${data.title}"></video>
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            <a href="${data.play}" download="tiktok_video_${data.id}.mp4" class="block w-full text-center bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-lg transition"><i class="fas fa-video mr-2"></i>تنزيل الفيديو (MP4)</a> 
+                            <a href="${data.music}" download="tiktok_audio_${data.id}.mp3" class="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition ${!data.music ? 'hidden' : ''}"><i class="fas fa-music mr-2"></i>تنزيل الصوت (MP3)</a>
+                        </div>
+                    </div>`;
+            };
+
+            const renderSlideshowResults = (data) => {
+                const imageGrid = data.images.map((img_src, index) => `
+                    <div class="relative group">
+                        <img src="${img_src}" class="rounded-lg w-full h-full object-cover aspect-square" alt="Slide ${index + 1} from TikTok by ${data.author.nickname}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/1f2937/f9fafb?text=Image';">
+                        <a href="${img_src}" download="tiktok_slide_${data.id}_${index+1}.jpeg" class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-2xl opacity-0 group-hover:opacity-100 transition" aria-label="تنزيل الصورة ${index + 1}"><i class="fas fa-download"></i></a>
+                    </div>
+                `).join('');
+
+                elements.resultsSingle.innerHTML = `
+                    <div class="p-4 border border-[var(--border-color)] rounded-lg animate-on-load">
+                        ${renderAuthorInfo(data)}
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">${imageGrid}</div>
+                        <button id="download-zip-btn" class="w-full text-center bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition"><i class="fas fa-file-archive mr-2"></i>تنزيل جميع الصور (ZIP)</button>
+                    </div>`;
+                
+                document.getElementById('download-zip-btn').addEventListener('click', () => downloadImagesAsZip(data.images, data.id));
+            };
+            
+            const downloadImagesAsZip = async (imageUrls, id) => {
+                showLoader('single', 'ضغط الصور... 0%'); // Zipping images... 0%
+                const zip = new JSZip();
+                let downloadedCount = 0;
+                let attemptedCount = 0; // To track attempts for loader text
+                let failedImageIndices = []; // To store indices of failed images
+
+                try {
+                    const promises = imageUrls.map(async (url, index) => {
+                        attemptedCount++;
+                        elements.loaderTextSingle.textContent = `جاري تنزيل الصورة ${attemptedCount} من ${imageUrls.length}...`; // Downloading image X of Y...
+                        try {
+                            const response = await fetch(url);
+                            if (!response.ok) {
+                                throw new Error(`فشل جلب الصورة: ${response.status} ${response.statusText}`); // Failed to fetch image
+                            }
+                            const blob = await response.blob();
+                            zip.file(`tiktok_slide_${id || 'unknown'}_${index + 1}.jpeg`, blob); // Use 'unknown' fallback for ID
+                            downloadedCount++;
+                        } catch (error) {
+                            console.error(`فشل تنزيل الصورة ${index + 1} (${url}):`, error); // Failed to download image
+                            failedImageIndices.push(`الصورة رقم ${index + 1}`); // Image number
+                        }
+                    });
+                    await Promise.allSettled(promises); // Use allSettled to wait for all promises to resolve/reject
+
+                    showLoader('single', 'جاري إنشاء ملف ZIP...'); // Generating ZIP file...
+                    const content = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } });
+                    saveAs(content, `tiktok_slideshow_${id || 'unknown'}.zip`); // Use 'unknown' fallback for ID
+
+                    if (failedImageIndices.length === 0) {
+                        showModal('success', 'اكتمل التنزيل', 'تم تنزيل ملف ZIP للشرائح بنجاح!'); // Download Complete, Slideshow ZIP downloaded successfully!
+                    } else if (downloadedCount > 0) {
+                        showModal('info', 'اكتمل التنزيل جزئيًا', `تم تنزيل ${downloadedCount} صورة بنجاح. فشل تنزيل: ${failedImageIndices.join(', ')}.`); // Partial Download Complete, Successfully downloaded X images. Failed to download: ...
+                    } else {
+                        showModal('error', 'فشل تنزيل ZIP', 'فشل إنشاء ملف ZIP. ربما تكون جميع الصور غير قابلة للوصول.'); // ZIP Download Failed, Failed to create ZIP file. All images might be inaccessible.
+                    }
+                } catch (error) {
+                    showModal('error', 'فشل تنزيل ZIP', `حدث خطأ أثناء إنشاء ملف ZIP: ${error.message}.`); // ZIP Download Failed, An error occurred during ZIP creation: ...
+                    console.error("خطأ في تنزيل ZIP:", error); // ZIP download error
+                } finally {
+                    hideLoader('single');
+                }
+            };
+
+            // --- PROFILE DOWNLOADER ---
+            const handleFetchProfile = async (loadMore = false) => {
+                if (!loadMore) {
+                    const url = elements.profileUrl.value.trim();
+                    if (!url) { showModal('error', 'Input Required', 'الرجاء لصق رابط ملف شخصي أو اسم مستخدم.'); return; } // Please paste a profile link or username.
+                    const match = url.match(/tiktok\.com\/@([^/?]+)/);
+                    profileState.unique_id = match ? match[1] : url.replace('@', '');
+                    profileState.cursor = 0;
+                    profileState.videos = [];
+                    elements.videosGrid.innerHTML = '';
+                    elements.profileControls.classList.add('hidden'); // Hide controls until videos are loaded
+                    elements.loadMoreBtn.classList.add('hidden'); // Hide load more initially
+                    updateSelectedCount(); // Reset selected count
+                }
+                
+                hideModal(); // Hide any previous error/info modal
+                showLoader('profile', `البحث عن تلك الفيديوهات الرائعة...`); // Finding those awesome videos...
+                try {
+                    const result = await fetchApi({ unique_id: profileState.unique_id, cursor: profileState.cursor });
+                    if (result.data && result.data.videos && result.data.videos.length > 0) {
+                        profileState.videos.push(...result.data.videos);
+                        renderProfileVideos(result.data.videos);
+                        profileState.cursor = result.data.cursor;
+                        elements.loadMoreBtn.classList.toggle('hidden', !result.data.hasMore);
+                        elements.profileControls.classList.remove('hidden');
+                    } else {
+                        elements.loadMoreBtn.classList.add('hidden');
+                        if (!loadMore) {
+                            showModal('info', 'لم يتم العثور على فيديوهات', 'لم يتم العثور على فيديوهات لهذا الملف الشخصي، أو الملف الشخصي خاص/غير موجود.'); // No videos found for this profile, or the profile is private/non-existent.
+                        } else {
+                            showModal('info', 'لا توجد المزيد من الفيديوهات', 'لا توجد المزيد من الفيديوهات لهذا الملف الشخصي.'); // No More Videos, No more videos found for this profile.
+                        }
+                    }
+                } catch (error) {
+                    showModal('error', 'فشل جلب الملف الشخصي', error.message); // Profile Fetch Failed
+                } finally {
+                    hideLoader('profile');
+                }
+            };
+            if(elements.fetchBtnProfile) elements.fetchBtnProfile.addEventListener('click', () => handleFetchProfile(false));
+            if(elements.loadMoreBtn) elements.loadMoreBtn.addEventListener('click', () => handleFetchProfile(true));
+            
+            const renderProfileVideos = (videos) => {
+                const html = videos.map((video, index) => `
+                    <div class="relative group rounded-lg overflow-hidden border border-[var(--border-color)] animate-on-load">
+                        <img src="${video.cover}" class="rounded-lg w-full h-full object-cover aspect-square" alt="TikTok video by ${profileState.unique_id}" onerror="this.onerror=null;this.src='https://placehold.co/150x150/1f2937/f9fafb?text=Video';">
+                        <div class="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-2 text-white text-xs opacity-0 group-hover:opacity-100 transition">
+                            <p class="font-semibold truncate mb-1">${video.title || 'لا يوجد عنوان'}</p> 
+                            <div class="flex items-center text-gray-300 text-xs">
+                                <span class="mr-2"><i class="fas fa-heart mr-1"></i>${formatNumber(video.digg_count)}</span>
+                                <span class="mr-2"><i class="fas fa-comment mr-1"></i>${formatNumber(video.comment_count)}</span>
+                                <span><i class="fas fa-clock mr-1"></i>${formatDuration(video.duration)}</span>
+                            </div>
+                        </div>
+                        <input type="checkbox" data-url="${video.play}" data-id="${video.id || `video-${index}`}" class="profile-video-checkbox absolute top-2 right-2 w-6 h-6 rounded-sm bg-white/50 checked:bg-pink-500 border-none focus:ring-0 cursor-pointer">
+                    </div>
+                `).join('');
+                elements.videosGrid.insertAdjacentHTML('beforeend', html);
+                updateSelectedCount();
+            };
+
+            // Helper to format large numbers (e.g., 12345 to 12.3K)
+            const formatNumber = (num) => {
+                if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+                if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+                return num;
+            };
+
+            // Helper to format duration (e.g., 65 to 01:05)
+            const formatDuration = (seconds) => {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+            };
+
+            if(elements.selectAllBtn) elements.selectAllBtn.addEventListener('click', (e) => {
+                const isSelectAll = e.target.textContent === 'Select All';
+                document.querySelectorAll('.profile-video-checkbox').forEach(cb => cb.checked = isSelectAll);
+                e.target.textContent = isSelectAll ? 'Deselect All' : 'Select All';
+                updateSelectedCount();
+            });
+
+            if(elements.videosGrid) elements.videosGrid.addEventListener('change', updateSelectedCount);
+
+            function updateSelectedCount() {
+                const count = document.querySelectorAll('.profile-video-checkbox:checked').length;
+                elements.selectedCount.textContent = count;
+                elements.downloadSelectedBtn.disabled = count === 0;
+            }
+
+            if(elements.downloadSelectedBtn) elements.downloadSelectedBtn.addEventListener('click', async () => {
+                const selectedCheckboxes = document.querySelectorAll('.profile-video-checkbox:checked');
+                if (selectedCheckboxes.length === 0) {
+                    showModal('error', 'لا توجد فيديوهات محددة', 'الرجاء تحديد فيديو واحد على الأقل لتنزيله.'); // No Videos Selected, Please select at least one video to download.
+                    return;
+                }
+
+                hideModal();
+                showLoader('profile', `جاري تحضير ${selectedCheckboxes.length} فيديو للتنزيل...`); // Preparing X videos for download...
+
+                const zip = new JSZip();
+                let downloadedCount = 0;
+                let attemptedCount = 0; // To track attempts for loader text
+                let failedVideoIds = []; // To store IDs of failed videos
+
+                try {
+                    const downloadPromises = Array.from(selectedCheckboxes).map(async (checkbox, i) => {
+                        const videoUrl = checkbox.dataset.url;
+                        const videoId = checkbox.dataset.id; 
+                        
+                        attemptedCount++;
+                        elements.loaderTextProfile.textContent = `جاري تنزيل الفيديو ${attemptedCount} من ${selectedCheckboxes.length}...`; // Downloading video X of Y...
+
+                        try {
+                            // Use a proxy for fetching video content for ZIP to avoid CORS issues
+                            const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(videoUrl)}`;
+                            const response = await fetch(proxyUrl);
+                            
+                            if (!response.ok) {
+                                throw new Error(`فشل جلب الفيديو: ${response.status} ${response.statusText}`); // Failed to fetch video
+                            }
+                            const blob = await response.blob();
+                            // Ensure videoId is valid for filename, use a fallback if not
+                            const fileName = `tiktok_video_${videoId || `unknown_${i}`}.mp4`;
+                            zip.file(fileName, blob);
+                            downloadedCount++;
+                        } catch (error) {
+                            console.error(`فشل تنزيل الفيديو ${videoId} (${videoUrl}):`, error); // Failed to download video
+                            failedVideoIds.push(videoId || `الفيديو رقم ${i + 1}`); // Video number
+                        }
+                    });
+
+                    await Promise.allSettled(downloadPromises); // Wait for all download attempts to settle
+
+                    showLoader('profile', 'جاري إنشاء ملف ZIP...'); // Generating ZIP file...
+                    const content = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } });
+                    saveAs(content, `tiktok_profile_${profileState.unique_id || 'videos'}.zip`);
+
+                    if (failedVideoIds.length === 0) {
+                        showModal('success', 'اكتمل التنزيل', `تم تنزيل ${downloadedCount} فيديو بنجاح كملف ZIP!`); // Download Complete, Successfully downloaded X videos as a ZIP file!
+                    } else if (downloadedCount > 0) {
+                        showModal('info', 'اكتمل التنزيل جزئيًا', `تم تنزيل ${downloadedCount} فيديو بنجاح. فشل تنزيل ${failedVideoIds.length} فيديو: ${failedVideoIds.join(', ')}.`); // Partial Download Complete, Successfully downloaded X videos. Failed to download Y videos.
+                    } else {
+                        showModal('error', 'فشل التنزيل بالجملة', `حدث خطأ أثناء التنزيل بالجملة: لم يتم تنزيل أي فيديو. ربما تكون جميع الفيديوهات غير قابلة للوصال.`); // Bulk Download Failed, An error occurred during bulk download: No videos were downloaded. All videos might be inaccessible.
+                    }
+
+                } catch (error) {
+                    showModal('error', 'فشل التنزيل بالجملة', `حدث خطأ غير متوقع أثناء التنزيل بالجملة: ${error.message}.`); // Bulk Download Failed, An unexpected error occurred during bulk download: ...
+                    console.error("خطأ في التنزيل بالجملة:", error); // Bulk download error
+                } finally {
+                    hideLoader('profile');
+                }
+            });
+
+            // --- GENERIC & HELPER FUNCTIONS ---
+            const fetchApi = async (params) => {
+                const isProfile = !!params.unique_id;
+                const endpoint = isProfile ? `https://www.tikwm.com/api/user/posts?unique_id=@${params.unique_id}&count=12&cursor=${params.cursor || 0}` : `https://www.tikwm.com/api/`;
+                const options = isProfile ? { method: 'GET' } : { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `url=${encodeURIComponent(params.url)}` };
+                
+                const response = await fetch(endpoint, options);
+                if (!response.ok) {
+                    throw new Error(`خطأ في الشبكة: ${response.status} ${response.statusText}. يرجى التحقق من اتصالك بالإنترنت.`); // Network error: ... Please check your internet connection.
+                }
+                const result = await response.json();
+                if (result.code !== 0) {
+                    throw new Error(result.msg || 'خطأ في API: لم نتمكن من معالجة الطلب. يرجى التحقق من الرابط أو المحاولة لاحقًا.'); // API error: Could not process the request. Please check the link or try again later.
+                }
+                return result;
+            };
+
+            const showLoader = (type, text = 'جاري المعالجة...') => { // Processing...
+                document.getElementById(`loader-${type}`).classList.remove('hidden');
+                document.getElementById(`loader-text-${type}`).textContent = text;
+            };
+            const hideLoader = (type) => document.getElementById(`loader-${type}`).classList.add('hidden');
+            
+            const addToHistory = (data) => {
+                // Ensure data has necessary properties for history display
+                const historyItemData = {
+                    id: data.id,
+                    title: data.title || 'فيديو/عرض شرائح بدون عنوان', // Untitled Video/Slideshow
+                    cover: data.cover || (data.images && data.images[0] ? data.images[0] : 'https://placehold.co/64x64/1f2937/f9fafb?text=N/A'),
+                    author: data.author ? data.author.unique_id : 'غير معروف' // unknown
+                };
+
+                // Add to history only if not already present
+                if (!downloadHistory.some(item => item.id === historyItemData.id)) {
+                    downloadHistory.unshift(historyItemData);
+                    if (downloadHistory.length > 9) downloadHistory.pop(); // Keep history to max 9 items
+                    localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+                    renderHistory();
+                }
+            };
+
+            const renderHistory = () => {
+                elements.historyContainer.innerHTML = '';
+                elements.noHistoryMsg.classList.toggle('hidden', downloadHistory.length > 0);
+                if (downloadHistory.length > 0) {
+                    downloadHistory.forEach(item => {
+                        const historyItem = document.createElement('div');
+                        historyItem.className = 'history-item p-4 rounded-lg shadow flex items-center gap-4 border border-[var(--border-color)] animate-on-load';
+                        historyItem.innerHTML = `
+                            <img src="${item.cover}" class="w-16 h-16 rounded-md object-cover" onerror="this.onerror=null;this.src='https://placehold.co/64x64/1f2937/f9fafb?text=...';">
+                            <div class="overflow-hidden">
+                                <p class="font-semibold truncate">${item.title}</p>
+                                <a href="https://www.tiktok.com/@${item.author}/video/${item.id}" target="_blank" class="text-sm text-pink-500 hover:underline">المشاهدة على تيك توك</a>
+                            </div>
+                        `;
+                        elements.historyContainer.appendChild(historyItem);
+                    });
+                } else {
+                    elements.historyContainer.appendChild(elements.noHistoryMsg);
+                }
+            };
+            
+            // --- INITIALIZATION ---
+            applyTheme(localStorage.getItem('darkMode') === 'true');
+            renderHistory();
+        });
+    </script>
+</body>
+</html>
